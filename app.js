@@ -1,23 +1,5 @@
 const contractABI = [
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "pizzaIndex",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "toppings",
-				"type": "string"
-			}
-		],
-		"name": "buyPizza",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -81,6 +63,24 @@ const contractABI = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "pizzaIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "toppings",
+				"type": "string"
+			}
+		],
+		"name": "buyPizza",
+		"outputs": [],
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -201,7 +201,7 @@ const contractABI = [
 		"type": "function"
 	}
 ];
-const contractAddress = '0xf9DE8Df1C750d165A6312B8c0EdE880e912295F5';  // Replace with your deployed contract address
+const contractAddress = '0x69678a13899be766032856Dd10774ED27C9Db58A';  // Replace with your deployed contract address
 
 
 let web3;
