@@ -257,18 +257,35 @@ async function buyPizza() {
     displayOrders();
 }
 
-async function displayOrders() {
-    const orders = await contract.methods.getOrders().call();
-    const ordersList = document.getElementById('orders-list');
-    ordersList.innerHTML = '';
+async function buyPizza() {
+    if (selectedPizzaIndex === null) {
+        alert("Please select a pizza first!");
+        return;
+    }
 
-    orders.forEach(order => {
-        const li = document.createElement('li');
-        li.textContent = `Pizza: ${order.pizzaType}, Toppings: ${order.toppings}, Paid: ${web3.utils.fromWei(order.price, 'ether')} ETH`;
-        ordersList.appendChild(li);
-    });
+    const toppings = getSelectedToppings();
+    const accounts = await web3.eth.getAccounts();
+    
+    console.log('Selected Pizza Index:', selectedPizzaIndex);
+    console.log('Toppings:', toppings);
+    console.log('User Account:', accounts[0]);
+
+    // Fetch price from the contract
+    try {
+        const pizzaPrice = web3.utils.toWei('0.01', 'ether');  // Use actual price logic for different pizzas
+        console.log('Pizza Price (in Wei):', pizzaPrice);
+
+        // Send transaction
+        await contract.methods.buyPizza('Customer Name', toppings).send({
+            from: accounts[0],
+            value: pizzaPrice
+        });
+
+        alert("Transaction successful! Pizza ordered.");
+        // Reload order history
+        displayOrders();
+    } catch (error) {
+        console.error(error);
+        alert("Transaction failed. Please try again.");
+    }
 }
-
-document.getElementById('buyPizzaBtn').addEventListener('click', buyPizza);
-
-window.onload = loadBlockchainData;
