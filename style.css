@@ -1,0 +1,137 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    text-align: center;
+}
+
+header {
+    background-color: #ff4757;
+    color: #fff;
+    padding: 2rem;
+    font-size: 2rem;
+}
+
+header h1 {
+    font-size: 3rem;
+}
+
+main {
+    padding: 2rem;
+}
+
+/* Pizza Selection */
+#pizza-selection h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #2f3542;
+}
+
+.pizza-menu {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 3rem;
+}
+
+.pizza-item {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    width: 200px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.pizza-item img {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.pizza-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.pizza-item .price {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #ff6b81;
+}
+
+.pizza-item .select-btn {
+    background-color: #ff4757;
+    color: #fff;
+    border: none;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.pizza-item:hover {
+    transform: scale(1.05);
+}
+
+.pizza-item .select-btn:hover {
+    background-color: #ff6b81;
+}
+
+/* Toppings Section */
+#customize-toppings {
+    margin-bottom: 3rem;
+}
+
+.topping-options label {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.buy-btn {
+    background-color: #2ed573;
+    color: #fff;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.buy-btn:hover {
+    background-color: #28a745;
+}
+
+/* Order List */
+#orders {
+    margin-top: 2rem;
+}
+
+#orders-list {
+    list-style: none;
+}
+
+#orders-list li {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
+footer {
+    background-color: #2f3542;
+    color: #fff;
+    padding: 1rem;
+    font-size: 1rem;
+}
