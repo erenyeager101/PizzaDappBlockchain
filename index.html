@@ -3,25 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy Pizza with Crypto</title>
+    <title>Crypto Pizza Shop</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Order Pizza with Crypto</h1>
+    <header>
+        <h1>🍕 Crypto Pizza Shop 🍕</h1>
+        <p>Order your favorite pizza and pay with cryptocurrency!</p>
+    </header>
 
-    <div>
-        <label for="pizza">Select a Pizza:</label>
-        <select id="pizza"></select>
-    </div>
+    <main>
+        <section id="pizza-selection">
+            <h2>Select Your Pizza</h2>
+            <div class="pizza-menu">
+                <div class="pizza-item" id="margherita">
+                    <img src="margherita.jpg" alt="Margherita Pizza">
+                    <h3>Margherita</h3>
+                    <p class="price">0.01 ETH</p>
+                    <button class="select-btn" onclick="selectPizza(0)">Select</button>
+                </div>
+                <div class="pizza-item" id="pepperoni">
+                    <img src="pepperoni.jpg" alt="Pepperoni Pizza">
+                    <h3>Pepperoni</h3>
+                    <p class="price">0.015 ETH</p>
+                    <button class="select-btn" onclick="selectPizza(1)">Select</button>
+                </div>
+                <div class="pizza-item" id="veggie">
+                    <img src="veggie.jpg" alt="Veggie Pizza">
+                    <h3>Veggie</h3>
+                    <p class="price">0.012 ETH</p>
+                    <button class="select-btn" onclick="selectPizza(2)">Select</button>
+                </div>
+                <div class="pizza-item" id="bbq">
+                    <img src="bbq.jpg" alt="BBQ Chicken Pizza">
+                    <h3>BBQ Chicken</h3>
+                    <p class="price">0.018 ETH</p>
+                    <button class="select-btn" onclick="selectPizza(3)">Select</button>
+                </div>
+            </div>
+        </section>
 
-    <div>
-        <label for="toppings">Toppings:</label>
-        <input type="text" id="toppings">
-    </div>
+        <section id="customize-toppings">
+            <h2>Customize Your Toppings</h2>
+            <div class="topping-options">
+                <label><input type="checkbox" value="Cheese" id="cheese"> Cheese</label>
+                <label><input type="checkbox" value="Pepperoni" id="pepperoni-topping"> Pepperoni</label>
+                <label><input type="checkbox" value="Mushrooms" id="mushrooms"> Mushrooms</label>
+                <label><input type="checkbox" value="Olives" id="olives"> Olives</label>
+            </div>
+            <button id="buyPizzaBtn" class="buy-btn">Buy Pizza</button>
+        </section>
 
-    <button id="buyPizzaBtn">Buy Pizza</button>
+        <section id="orders">
+            <h2>Your Orders</h2>
+            <ul id="orders-list"></ul>
+        </section>
+    </main>
 
-    <h2>Your Orders</h2>
-    <ul id="orders"></ul>
+    <footer>
+        <p>&copy; 2024 Crypto Pizza Shop</p>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script src="app.js"></script>
