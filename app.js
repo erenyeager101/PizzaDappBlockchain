@@ -203,8 +203,10 @@ const contractABI = [
 ];
 const contractAddress = '0xf9DE8Df1C750d165A6312B8c0EdE880e912295F5';  // Replace with your deployed contract address
 
+
 let web3;
 let contract;
+let selectedPizzaIndex = null;
 
 async function loadBlockchainData() {
     if (window.ethereum) {
@@ -212,9 +214,6 @@ async function loadBlockchainData() {
         await window.ethereum.enable();
         contract = new web3.eth.Contract(contractABI, contractAddress);
 
-        // Load available pizzas
-        loadPizzas();
-        
         // Display order history
         displayOrders();
     } else {
@@ -222,29 +221,34 @@ async function loadBlockchainData() {
     }
 }
 
-async function loadPizzas() {
-    const pizzas = await contract.methods.getAvailablePizzas().call();
-    const pizzaSelect = document.getElementById('pizza');
-    pizzaSelect.innerHTML = '';  // Clear existing options
+function selectPizza(index) {
+    selectedPizzaIndex = index;
+    alert(`You have selected pizza #${index + 1}`);
+}
 
-    pizzas.forEach((pizza, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.text = `${pizza.name} - ${web3.utils.fromWei(pizza.price, 'ether')} ETH`;
-        pizzaSelect.appendChild(option);
-    });
+function getSelectedToppings() {
+    let selectedToppings = [];
+    if (document.getElementById('cheese').checked) selectedToppings.push("Cheese");
+    if (document.getElementById('pepperoni-topping').checked) selectedToppings.push("Pepperoni");
+    if (document.getElementById('mushrooms').checked) selectedToppings.push("Mushrooms");
+    if (document.getElementById('olives').checked) selectedToppings.push("Olives");
+    return selectedToppings.join(', ');
 }
 
 async function buyPizza() {
-    const pizzaIndex = document.getElementById('pizza').value;
-    const toppings = document.getElementById('toppings').value;
+    if (selectedPizzaIndex === null) {
+        alert("Please select a pizza first!");
+        return;
+    }
+
+    const toppings = getSelectedToppings();
     const accounts = await web3.eth.getAccounts();
     
-    const pizza = await contract.methods.getAvailablePizzas().call(pizzaIndex);
-    const pizzaPrice = pizza[pizzaIndex].price;
+    const pizza = await contract.methods.getAvailablePizzas().call(selectedPizzaIndex);
+    const pizzaPrice = pizza[selectedPizzaIndex].price;
 
     // Send transaction
-    await contract.methods.buyPizza(pizzaIndex, toppings).send({
+    await contract.methods.buyPizza(selectedPizzaIndex, toppings).send({
         from: accounts[0],
         value: pizzaPrice
     });
@@ -255,12 +259,12 @@ async function buyPizza() {
 
 async function displayOrders() {
     const orders = await contract.methods.getOrders().call();
-    const ordersList = document.getElementById('orders');
-    ordersList.innerHTML = '';  // Clear the existing list
+    const ordersList = document.getElementById('orders-list');
+    ordersList.innerHTML = '';
 
     orders.forEach(order => {
         const li = document.createElement('li');
-        li.innerHTML = `Pizza: ${order.pizzaName}, Toppings: ${order.toppings}, Price: ${web3.utils.fromWei(order.price, 'ether')} ETH, Buyer: ${order.buyer}`;
+        li.textContent = `Pizza: ${order.pizzaType}, Toppings: ${order.toppings}, Paid: ${web3.utils.fromWei(order.price, 'ether')} ETH`;
         ordersList.appendChild(li);
     });
 }
