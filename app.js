@@ -5,14 +5,16 @@ const contractABI = [
 				"internalType": "uint256",
 				"name": "pizzaIndex",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "toppingOption",
-				"type": "uint256"
 			}
 		],
-		"name": "buyPizza",
+		"name": "addToCart",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "checkout",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
@@ -26,19 +28,25 @@ const contractABI = [
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "buyer",
-				"type": "address"
+				"indexed": false,
+				"internalType": "string",
+				"name": "pizzaName",
+				"type": "string"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "value",
+				"name": "price",
 				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "buyer",
+				"type": "address"
 			}
 		],
-		"name": "CouponIssued",
+		"name": "PizzaAddedToCart",
 		"type": "event"
 	},
 	{
@@ -48,6 +56,12 @@ const contractABI = [
 				"indexed": false,
 				"internalType": "string",
 				"name": "pizzaName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "toppings",
 				"type": "string"
 			},
 			{
@@ -86,30 +100,11 @@ const contractABI = [
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "coupons",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
 			},
 			{
-				"internalType": "bool",
-				"name": "isActive",
-				"type": "bool"
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -127,12 +122,12 @@ const contractABI = [
 						"type": "string"
 					},
 					{
-						"internalType": "uint256[3]",
-						"name": "prices",
-						"type": "uint256[3]"
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
 					}
 				],
-				"internalType": "struct PizzaShop.PizzaDetails[]",
+				"internalType": "struct Pizza.PizzaDetails[]",
 				"name": "",
 				"type": "tuple[]"
 			}
@@ -141,45 +136,19 @@ const contractABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			}
-		],
-		"name": "getCoupon",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "isActive",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct PizzaShop.Coupon",
-				"name": "",
-				"type": "tuple"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [],
-		"name": "getOrders",
+		"name": "getCart",
 		"outputs": [
 			{
 				"components": [
 					{
 						"internalType": "string",
 						"name": "pizzaName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "toppings",
 						"type": "string"
 					},
 					{
@@ -198,7 +167,47 @@ const contractABI = [
 						"type": "address"
 					}
 				],
-				"internalType": "struct PizzaShop.PizzaOrder[]",
+				"internalType": "struct Pizza.PizzaOrder[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getOrders",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "pizzaName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "toppings",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "buyer",
+						"type": "address"
+					}
+				],
+				"internalType": "struct Pizza.PizzaOrder[]",
 				"name": "",
 				"type": "tuple[]"
 			}
@@ -219,6 +228,11 @@ const contractABI = [
 			{
 				"internalType": "string",
 				"name": "pizzaName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "toppings",
 				"type": "string"
 			},
 			{
@@ -252,81 +266,104 @@ const contractABI = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userCarts",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "pizzaName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "toppings",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "buyer",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	}
 ];
-const contractAddress = '0x525D48455cebd5A2413a0d36772E595060885A25';  // Replace with your deployed contract address
+const contractAddress = '0xAF463EDD2002B6075c396436e9Ac9B4355638a51';  // Replace with your deployed contract address
 
 
-let web3 = new Web3(Web3.givenProvider);
-async function loadBlockchainData() {
-    if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        await window.ethereum.enable();
-        contract = new web3.eth.Contract(contractABI, contractAddress);
+// Initialize Web3
+const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 
-        // Display order history
-        displayOrders();
-    } else {
-        alert("Please install MetaMask to use this DApp!");
-    }
-}
-let pizzaContract;
 
-const pizzaMenuDiv = document.getElementById("pizza-menu");
-const couponListDiv = document.getElementById("coupon-list");
 
-window.onload = async function() {
-  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-  const account = accounts[0];
+const pizzaContract = new web3.eth.Contract(contractABI, contractAddress);
 
-  pizzaContract = new web3.eth.Contract(ABI, contractAddress);
-
-  loadPizzas();
-  loadCoupon(account);
-};
-
-// Load pizzas from contract
+// Function to display pizzas
 async function loadPizzas() {
-  const pizzaList = await pizzaContract.methods.getAvailablePizzas().call();
-  pizzaList.forEach((pizza, index) => {
-    let pizzaCard = `
-      <div class="pizza-card">
-        <h2>${pizza.name}</h2>
-        <ul>
-          <li>Option 1: ${web3.utils.fromWei(pizza.prices[0], 'ether')} ETH</li>
-          <li>Option 2: ${web3.utils.fromWei(pizza.prices[1], 'ether')} ETH</li>
-          <li>Option 3: ${web3.utils.fromWei(pizza.prices[2], 'ether')} ETH</li>
-        </ul>
-        <button onclick="buyPizza(${index}, 0)">Buy Option 1</button>
-        <button onclick="buyPizza(${index}, 1)">Buy Option 2</button>
-        <button onclick="buyPizza(${index}, 2)">Buy Option 3</button>
-      </div>`;
-    pizzaMenuDiv.innerHTML += pizzaCard;
-  });
+    const pizzas = await pizzaContract.methods.getAvailablePizzas().call();
+    const pizzaList = document.getElementById('pizza-list');
+
+    pizzas.forEach((pizza, index) => {
+        const pizzaCard = document.createElement('div');
+        pizzaCard.innerHTML = `
+            <img src="pizza${index}.jpg" alt="${pizza.name}">
+            <h3>${pizza.name}</h3>
+            <p>Price: ${web3.utils.fromWei(pizza.price, 'ether')} ETH</p>
+            <button onclick="addToCart(${index})">Add to Cart</button>
+        `;
+        pizzaList.appendChild(pizzaCard);
+    });
 }
 
-// Buy pizza function
-async function buyPizza(pizzaIndex, toppingOption) {
-  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-  const account = accounts[0];
-
-  const pizza = await pizzaContract.methods.availablePizzas(pizzaIndex).call();
-  const price = pizza.prices[toppingOption];
-
-  await pizzaContract.methods.buyPizza(pizzaIndex, toppingOption).send({
-    from: account,
-    value: price
-  });
-  alert("Pizza ordered successfully!");
-  loadCoupon(account);
+// Function to add pizza to cart
+async function addToCart(pizzaIndex) {
+    const accounts = await web3.eth.getAccounts();
+    await pizzaContract.methods.addToCart(pizzaIndex).send({ from: accounts[0] });
+    alert('Pizza added to cart!');
 }
 
-// Load user coupons
-async function loadCoupon(account) {
-  const coupon = await pizzaContract.methods.getCoupon(account).call();
-  if (coupon.isActive) {
-    couponListDiv.innerHTML = `You have a coupon worth ${web3.utils.fromWei(coupon.value, 'ether')} ETH`;
-  } else {
-    couponListDiv.innerHTML = "No active coupons available.";
-  }
+// Function to checkout
+async function checkout() {
+    const accounts = await web3.eth.getAccounts();
+    const cart = await pizzaContract.methods.getCart().call({ from: accounts[0] });
+    
+    // Calculate total price
+    const totalAmount = cart.reduce((total, item) => total + parseInt(item.price), 0);
+
+    await pizzaContract.methods.checkout().send({
+        from: accounts[0],
+        value: totalAmount
+    });
+    alert('Transaction completed!');
 }
+
+// Attach event listeners
+document.getElementById('checkout-button').addEventListener('click', checkout);
+
+// Load pizzas on page load
+loadPizzas();
+
