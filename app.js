@@ -258,6 +258,18 @@ const contractAddress = '0x525D48455cebd5A2413a0d36772E595060885A25';  // Replac
 
 
 let web3 = new Web3(Web3.givenProvider);
+async function loadBlockchainData() {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        await window.ethereum.enable();
+        contract = new web3.eth.Contract(contractABI, contractAddress);
+
+        // Display order history
+        displayOrders();
+    } else {
+        alert("Please install MetaMask to use this DApp!");
+    }
+}
 let pizzaContract;
 
 const pizzaMenuDiv = document.getElementById("pizza-menu");
