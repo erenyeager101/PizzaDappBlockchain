@@ -1,3 +1,4 @@
+
 const contractABI = [
 	{
 		"inputs": [
@@ -313,57 +314,103 @@ const contractABI = [
 	}
 ];
 const contractAddress = '0xAF463EDD2002B6075c396436e9Ac9B4355638a51';  // Replace with your deployed contract address
-
-
-// Initialize Web3
-const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
-
-
-
-const pizzaContract = new web3.eth.Contract(contractABI, contractAddress);
+async function loadBlockchainData() {
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        try {
+            // Request account access
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+            
+            // Initialize the contract
+            pizzaContract = new web3.eth.Contract(contractABI, contractAddress);
+            
+            // Load available pizzas
+            loadPizzas();
+            
+            // Display order history (if needed)
+            // displayOrders();
+        } catch (error) {
+            console.error("User denied account access or an error occurred:", error);
+            alert("Please enable MetaMask to use this DApp!");
+        }
+    } else {
+        alert("Please install MetaMask to use this DApp!");
+    }
+}
 
 // Function to display pizzas
 async function loadPizzas() {
-    const pizzas = await pizzaContract.methods.getAvailablePizzas().call();
-    const pizzaList = document.getElementById('pizza-list');
+    try {
+        const pizzas = await pizzaContract.methods.getAvailablePizzas().call();
+        const pizzaList = document.getElementById('pizza-list');
+        pizzaList.innerHTML = ''; // Clear existing pizzas
 
-    pizzas.forEach((pizza, index) => {
-        const pizzaCard = document.createElement('div');
-        pizzaCard.innerHTML = `
-            <img src="pizza${index}.jpg" alt="${pizza.name}">
-            <h3>${pizza.name}</h3>
-            <p>Price: ${web3.utils.fromWei(pizza.price, 'ether')} ETH</p>
-            <button onclick="addToCart(${index})">Add to Cart</button>
-        `;
-        pizzaList.appendChild(pizzaCard);
-    });
+        pizzas.forEach((pizza, index) => {
+            const pizzaCard = document.createElement('div');
+            pizzaCard.innerHTML = `
+                <img src="${index}.png" alt="${pizza.name}">
+                <h3>${pizza.name}</h3>
+                <p>Price: ${web3.utils.fromWei(pizza.price, 'ether')} ETH</p>
+                <button onclick="addToCart(${index})">Add to Cart</button>
+            `;
+            pizzaList.appendChild(pizzaCard);
+        });
+    } catch (error) {
+        console.error("Error loading pizzas:", error);
+    }
 }
 
 // Function to add pizza to cart
 async function addToCart(pizzaIndex) {
-    const accounts = await web3.eth.getAccounts();
-    await pizzaContract.methods.addToCart(pizzaIndex).send({ from: accounts[0] });
-    alert('Pizza added to cart!');
+    try {
+        const accounts = await web3.eth.getAccounts();
+        await pizzaContract.methods.addToCart(pizzaIndex).send({ from: accounts[0] });
+        alert('Pizza added to cart!');
+    } catch (error) {
+        console.error("Error adding pizza to cart:", error);
+    }
 }
+async function viewCart() {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const cart = await pizzaContract.methods.getCart().call({ from: accounts[0] });
+        const cartList = document.getElementById('cart-list');
+        cartList.innerHTML = ''; // Clear existing cart items
 
+        cart.forEach(item => {
+            const cartItem = document.createElement('div');
+            cartItem.innerHTML = `
+                <h3>${item.pizzaName}</h3>
+                <p>Price: ${web3.utils.fromWei(item.price, 'ether')} ETH</p>
+            `;
+            cartList.appendChild(cartItem);
+        });
+    } catch (error) {
+        console.error("Error viewing cart:", error);
+    }
+}
 // Function to checkout
 async function checkout() {
-    const accounts = await web3.eth.getAccounts();
-    const cart = await pizzaContract.methods.getCart().call({ from: accounts[0] });
-    
-    // Calculate total price
-    const totalAmount = cart.reduce((total, item) => total + parseInt(item.price), 0);
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const cart = await pizzaContract.methods.getCart().call({ from: accounts[0] });
+        
+        // Calculate total price
+        const totalAmount = cart.reduce((total, item) => total + parseInt(item.price), 0);
 
-    await pizzaContract.methods.checkout().send({
-        from: accounts[0],
-        value: totalAmount
-    });
-    alert('Transaction completed!');
+        await pizzaContract.methods.checkout().send({
+            from: accounts[0],
+            value: totalAmount
+        });
+        alert('Transaction completed!');
+    } catch (error) {
+        console.error("Error during checkout:", error);
+    }
 }
 
 // Attach event listeners
 document.getElementById('checkout-button').addEventListener('click', checkout);
+document.getElementById('view-cart-button').addEventListener('click', viewCart);
 
-// Load pizzas on page load
-loadPizzas();
-
+// Initialize Web3 and contract on page load
+window.onload = loadBlockchainData;
