@@ -12,59 +12,30 @@
         <p>Order your favorite pizza and pay with cryptocurrency!</p>
     </header>
 
-    <main>
-        <section id="pizza-selection">
-            <h2>Select Your Pizza</h2>
-            <div class="pizza-menu">
-                <div class="pizza-item" id="margherita">
-                    <img src="1.png" alt="Margherita Pizza">
-                    <h3>Margherita</h3>
-                    <p class="price">0.01 ETH</p>
-                    <button class="select-btn" onclick="selectPizza(0)">Select</button>
-                </div>
-                <div class="pizza-item" id="pepperoni">
-                    <img src="2.png" alt="Pepperoni Pizza">
-                    <h3>Pepperoni</h3>
-                    <p class="price">0.015 ETH</p>
-                    <button class="select-btn" onclick="selectPizza(1)">Select</button>
-                </div>
-                <div class="pizza-item" id="veggie">
-                    <img src="3.png" alt="Veggie Pizza">
-                    <h3>Veggie</h3>
-                    <p class="price">0.012 ETH</p>
-                    <button class="select-btn" onclick="selectPizza(2)">Select</button>
-                </div>
-                <div class="pizza-item" id="bbq">
-                    <img src="5.png" alt="BBQ Chicken Pizza">
-                    <h3>BBQ Chicken</h3>
-                    <p class="price">0.018 ETH</p>
-                    <button class="select-btn" onclick="selectPizza(3)">Select</button>
-                </div>
-            </div>
-        </section>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Welcome to Crypto Pizza Shop</h1>
+    </header>
 
-        <section id="customize-toppings">
-            <h2>Customize Your Toppings</h2>
-            <div class="topping-options">
-                <label><input type="checkbox" value="Cheese" id="cheese"> Cheese</label>
-                <label><input type="checkbox" value="Pepperoni" id="pepperoni-topping"> Pepperoni</label>
-                <label><input type="checkbox" value="Mushrooms" id="mushrooms"> Mushrooms</label>
-                <label><input type="checkbox" value="Olives" id="olives"> Olives</label>
-            </div>
-            <button id="buyPizzaBtn" class="buy-btn">Buy Pizza</button>
-        </section>
+    <div id="pizza-menu" class="pizza-menu">
+      <!-- Pizza list will be populated dynamically -->
+    </div>
 
-        <section id="orders">
-            <h2>Your Orders</h2>
-            <ul id="orders-list"></ul>
-        </section>
-    </main>
+    <div id="coupon-info" class="coupon-info">
+      <h2>Your Coupons</h2>
+      <div id="coupon-list">
+        <!-- User's available coupon will show here -->
+      </div>
+    </div>
 
     <footer>
-        <p>&copy; 2024 Crypto Pizza Shop</p>
+      <p>&copy; 2024 Pizza Shop. All Rights Reserved.</p>
     </footer>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-    <script src="app.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
