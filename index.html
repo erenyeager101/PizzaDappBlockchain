@@ -4,162 +4,300 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Pizza Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS (needed for carousel functionality) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+
+</script>
+
     <link rel="stylesheet" href="style.css">
-</head>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #ff4757;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            font-size: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            font-size: 1.2rem;
+            margin-top: 0;
+        }
+        .navbar {
+            margin-bottom: 1rem;
+        }
+        .carousel {
+            margin-bottom: 2rem;
+        }
+        .carousel-item img {
+            width: 100%;
+            height: 60vh;
+            object-fit: cover;
+        }
+        /* Section Styling */
+.order-section {
+    padding: 40px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+.order-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
     color: #333;
 }
 
+/* Container for pizza cards */
 #pizza-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
 }
 
-#pizza-list div {
-    border: 1px solid #ddd;
-    padding: 16px;
-    margin: 16px;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* Individual pizza card */
+.pizza-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 280px; /* Adjust the width of each card */
     text-align: center;
-    width: 200px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 10px;
 }
 
-#pizza-list img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
+/* Hover effect for card */
+.pizza-card:hover {
+    transform: scale(1.05); /* Slight grow on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-#checkout-button {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #28a745;
+/* Pizza image styling */
+.pizza-card img {
+    width: 100%;
+    height: 200px; /* Ensure uniform image size */
+    object-fit: cover; /* Keeps images uniformly cropped */
+}
+
+/* Pizza title styling */
+.pizza-card h3 {
+    font-size: 1.6rem;
+    color: #ff6b81;
+    margin: 15px 0;
+}
+
+/* Price styling */
+.pizza-card p {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Button styling for View Cart and Checkout */
+.view-cart-btn, .checkout-btn {
+    background-color: #ff4757;
     color: #fff;
     border: none;
+    padding: 12px 20px;
     border-radius: 8px;
+    font-size: 1.2rem;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 15px;
 }
 
-#checkout-button:hover {
-    background-color: #218838;
+/* Hover effect for buttons */
+.view-cart-btn:hover, .checkout-btn:hover {
+    background-color: #ff6b81;
 }
 
-        body {
-  font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
-  margin: 0;
-  padding: 0;
-  color: #333;
+/* Cart summary section */
+#cart-summary {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #555;
 }
 
-.container {
-  width: 80%;
-  margin: 0 auto;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .pizza-card {
+        width: 100%; /* Full width on smaller screens */
+    }
 }
 
-header {
-  text-align: center;
-  padding: 20px 0;
-}
-
-.pizza-menu {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.pizza-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  width: 30%;
-  padding: 20px;
-  margin: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-}
-
-.pizza-card:hover {
-  transform: scale(1.05);
-}
-
-.pizza-card h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.pizza-card ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.pizza-card ul li {
-  margin: 8px 0;
-}
-
-button {
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #218838;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #333;
-  color: #fff;
-  margin-top: 40px;
-}
-
-.coupon-info {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #f1f1f1;
-}
-
-.coupon-info h2 {
-  font-size: 22px;
-}
-
+        
+        .checkout-btn, .view-cart-btn {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+            margin: 20px auto;
+            display: block;
+        }
+        .checkout-btn:hover, .view-cart-btn:hover {
+            background-color: #218838;
+        }
+        .comments-section, .about-us, .contact-section {
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        .comments-section h2, .about-us h2, .contact-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .comments-section form input, .comments-section form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .comments-section form button {
+            background-color: #ff4757;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .comments-section form button:hover {
+            background-color: #ff6b81;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1rem;
+        }
     </style>
+</head>
 <body>
     <header>
         <h1>🍕 Crypto Pizza Shop 🍕</h1>
         <p>Order your favorite pizza and pay with cryptocurrency!</p>
     </header>
 
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Welcome to Crypto Pizza Shop</h1>
-    </header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Crypto Pizza Shop</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#order-now">Order Now</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#comments">Comments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about-us">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-     <div id="pizza-list"></div>
-    <button id="checkout-button">Checkout</button>
-    <div id="cart-summary"></div>
+    <div id="pizzaCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="pizza1.png" class="d-block w-100" alt="Pizza 1">
+            </div>
+            <div class="carousel-item">
+                <img src="pizza2.png" class="d-block w-100" alt="Pizza 2">
+            </div>
+            <div class="carousel-item">
+                <img src="pizza3.png" class="d-block w-100" alt="Pizza 3">
+            </div>
+            <div class="carousel-item">
+                <img src="pizza4.png" class="d-block w-100" alt="Pizza 4">
+            </div>
+        </div>
+    
+        <!-- Controls (optional, but useful) -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#pizzaCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#pizzaCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    
 
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-    <script src="app.js"></script>
+    <section id="order-now" class="order-section">
+        <h2>Order Pizza Now!</h2>
+        <div id="pizza-list" class="d-flex flex-wrap justify-content-center"></div>
+        <button id="view-cart-button" class="view-cart-btn">View Cart</button>
+        <div id="cart-summary"></div>
+        <button id="checkout-button" class="checkout-btn">Checkout</button>
+    </section>
+
+    <section id="comments" class="comments-section">
+        <h2>Leave a Comment</h2>
+        <form>
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="email" name="email" placeholder="Your Email" required>
+            <textarea name="comment" rows="4" placeholder="Your Comment" required></textarea>
+            <button type="submit">Submit Comment</button>
+        </form>
+    </section>
+
+    <section id="about-us" class="about-us">
+        <h2>About Us</h2>
+        <p>Welcome to Crypto Pizza Shop! We offer the best pizzas and accept cryptocurrency for your convenience. Our mission is to provide delicious pizzas with a modern twist. Join us in experiencing the future of pizza ordering!</p>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <h2>Contact Us</h2>
+        <p>Email: contact@cryptopizzashop.com</p>
+        <p>Phone: +123 456 7890</p>
+        <p>Address: 123 Pizza Lane, Food City, FC 45678</p>
+    </section>
 
     <footer>
-      <p>&copy; 2024 Pizza Shop. All Rights Reserved.</p>
+        <p>&copy; 2024 Crypto Pizza Shop. All Rights Reserved.</p>
     </footer>
-  </div>
 
-  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
