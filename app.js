@@ -1,5 +1,23 @@
 const contractABI = [
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "pizzaIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "toppingOption",
+				"type": "uint256"
+			}
+		],
+		"name": "buyPizza",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -8,15 +26,28 @@ const contractABI = [
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "pizzaName",
-				"type": "string"
+				"indexed": true,
+				"internalType": "address",
+				"name": "buyer",
+				"type": "address"
 			},
 			{
 				"indexed": false,
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "CouponIssued",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
 				"internalType": "string",
-				"name": "toppings",
+				"name": "pizzaName",
 				"type": "string"
 			},
 			{
@@ -55,11 +86,6 @@ const contractABI = [
 				"internalType": "string",
 				"name": "name",
 				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -68,19 +94,25 @@ const contractABI = [
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "coupons",
+		"outputs": [
+			{
 				"internalType": "uint256",
-				"name": "pizzaIndex",
+				"name": "value",
 				"type": "uint256"
 			},
 			{
-				"internalType": "string",
-				"name": "toppings",
-				"type": "string"
+				"internalType": "bool",
+				"name": "isActive",
+				"type": "bool"
 			}
 		],
-		"name": "buyPizza",
-		"outputs": [],
-		"stateMutability": "payable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -95,14 +127,45 @@ const contractABI = [
 						"type": "string"
 					},
 					{
-						"internalType": "uint256",
-						"name": "price",
-						"type": "uint256"
+						"internalType": "uint256[3]",
+						"name": "prices",
+						"type": "uint256[3]"
 					}
 				],
-				"internalType": "struct Pizza.PizzaDetails[]",
+				"internalType": "struct PizzaShop.PizzaDetails[]",
 				"name": "",
 				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "getCoupon",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isActive",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct PizzaShop.Coupon",
+				"name": "",
+				"type": "tuple"
 			}
 		],
 		"stateMutability": "view",
@@ -117,11 +180,6 @@ const contractABI = [
 					{
 						"internalType": "string",
 						"name": "pizzaName",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "toppings",
 						"type": "string"
 					},
 					{
@@ -140,7 +198,7 @@ const contractABI = [
 						"type": "address"
 					}
 				],
-				"internalType": "struct Pizza.PizzaOrder[]",
+				"internalType": "struct PizzaShop.PizzaOrder[]",
 				"name": "",
 				"type": "tuple[]"
 			}
@@ -161,11 +219,6 @@ const contractABI = [
 			{
 				"internalType": "string",
 				"name": "pizzaName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "toppings",
 				"type": "string"
 			},
 			{
@@ -201,91 +254,67 @@ const contractABI = [
 		"type": "function"
 	}
 ];
-const contractAddress = '0x69678a13899be766032856Dd10774ED27C9Db58A';  // Replace with your deployed contract address
+const contractAddress = '0x525D48455cebd5A2413a0d36772E595060885A25';  // Replace with your deployed contract address
 
 
-let web3;
-let contract;
-let selectedPizzaIndex = null;
+let web3 = new Web3(Web3.givenProvider);
+let pizzaContract;
 
-async function loadBlockchainData() {
-    if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        await window.ethereum.enable();
-        contract = new web3.eth.Contract(contractABI, contractAddress);
+const pizzaMenuDiv = document.getElementById("pizza-menu");
+const couponListDiv = document.getElementById("coupon-list");
 
-        // Display order history
-        displayOrders();
-    } else {
-        alert("Please install MetaMask to use this DApp!");
-    }
+window.onload = async function() {
+  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+  const account = accounts[0];
+
+  pizzaContract = new web3.eth.Contract(ABI, contractAddress);
+
+  loadPizzas();
+  loadCoupon(account);
+};
+
+// Load pizzas from contract
+async function loadPizzas() {
+  const pizzaList = await pizzaContract.methods.getAvailablePizzas().call();
+  pizzaList.forEach((pizza, index) => {
+    let pizzaCard = `
+      <div class="pizza-card">
+        <h2>${pizza.name}</h2>
+        <ul>
+          <li>Option 1: ${web3.utils.fromWei(pizza.prices[0], 'ether')} ETH</li>
+          <li>Option 2: ${web3.utils.fromWei(pizza.prices[1], 'ether')} ETH</li>
+          <li>Option 3: ${web3.utils.fromWei(pizza.prices[2], 'ether')} ETH</li>
+        </ul>
+        <button onclick="buyPizza(${index}, 0)">Buy Option 1</button>
+        <button onclick="buyPizza(${index}, 1)">Buy Option 2</button>
+        <button onclick="buyPizza(${index}, 2)">Buy Option 3</button>
+      </div>`;
+    pizzaMenuDiv.innerHTML += pizzaCard;
+  });
 }
 
-function selectPizza(index) {
-    selectedPizzaIndex = index;
-    alert(`You have selected pizza #${index + 1}`);
+// Buy pizza function
+async function buyPizza(pizzaIndex, toppingOption) {
+  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+  const account = accounts[0];
+
+  const pizza = await pizzaContract.methods.availablePizzas(pizzaIndex).call();
+  const price = pizza.prices[toppingOption];
+
+  await pizzaContract.methods.buyPizza(pizzaIndex, toppingOption).send({
+    from: account,
+    value: price
+  });
+  alert("Pizza ordered successfully!");
+  loadCoupon(account);
 }
 
-function getSelectedToppings() {
-    let selectedToppings = [];
-    if (document.getElementById('cheese').checked) selectedToppings.push("Cheese");
-    if (document.getElementById('pepperoni-topping').checked) selectedToppings.push("Pepperoni");
-    if (document.getElementById('mushrooms').checked) selectedToppings.push("Mushrooms");
-    if (document.getElementById('olives').checked) selectedToppings.push("Olives");
-    return selectedToppings.join(', ');
-}
-
-async function buyPizza() {
-    if (selectedPizzaIndex === null) {
-        alert("Please select a pizza first!");
-        return;
-    }
-
-    const toppings = getSelectedToppings();
-    const accounts = await web3.eth.getAccounts();
-    
-    const pizza = await contract.methods.getAvailablePizzas().call(selectedPizzaIndex);
-    const pizzaPrice = pizza[selectedPizzaIndex].price;
-
-    // Send transaction
-    await contract.methods.buyPizza(selectedPizzaIndex, toppings).send({
-        from: accounts[0],
-        value: pizzaPrice
-    });
-
-    // Reload order history
-    displayOrders();
-}
-
-async function buyPizza() {
-    if (selectedPizzaIndex === null) {
-        alert("Please select a pizza first!");
-        return;
-    }
-
-    const toppings = getSelectedToppings();
-    const accounts = await web3.eth.getAccounts();
-    
-    console.log('Selected Pizza Index:', selectedPizzaIndex);
-    console.log('Toppings:', toppings);
-    console.log('User Account:', accounts[0]);
-
-    // Fetch price from the contract
-    try {
-        const pizzaPrice = web3.utils.toWei('0.01', 'ether');  // Use actual price logic for different pizzas
-        console.log('Pizza Price (in Wei):', pizzaPrice);
-
-        // Send transaction
-        await contract.methods.buyPizza('Customer Name', toppings).send({
-            from: accounts[0],
-            value: pizzaPrice
-        });
-
-        alert("Transaction successful! Pizza ordered.");
-        // Reload order history
-        displayOrders();
-    } catch (error) {
-        console.error(error);
-        alert("Transaction failed. Please try again.");
-    }
+// Load user coupons
+async function loadCoupon(account) {
+  const coupon = await pizzaContract.methods.getCoupon(account).call();
+  if (coupon.isActive) {
+    couponListDiv.innerHTML = `You have a coupon worth ${web3.utils.fromWei(coupon.value, 'ether')} ETH`;
+  } else {
+    couponListDiv.innerHTML = "No active coupons available.";
+  }
 }
